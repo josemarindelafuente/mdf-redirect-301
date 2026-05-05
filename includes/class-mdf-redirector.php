@@ -17,19 +17,20 @@ class MDF_Redirector
             return;
         }
 
+        if (isset($_SERVER['REQUEST_METHOD']) && in_array(strtoupper((string) $_SERVER['REQUEST_METHOD']), array('HEAD', 'OPTIONS'), true)) {
+            return;
+        }
+
         $enabled = (int) get_option('mdf_redirects_enabled', 1);
         if ($enabled !== 1) {
             return;
         }
 
         $current_uri = isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '';
-        $current_uri = ltrim($current_uri, '/');
+        $current_path = (string) wp_parse_url($current_uri, PHP_URL_PATH);
+        $current_path = ltrim($current_path, '/');
 
-        if ($current_uri === '') {
-            $current_uri = '/';
-        }
-
-        if (self::is_excluded_path($current_uri)) {
+        if (self::is_excluded_path($current_path)) {
             return;
         }
 
@@ -73,13 +74,15 @@ class MDF_Redirector
             $excluded_paths = array('wp-admin', 'wp-login.php');
         }
 
+        $current_uri = trim((string) $current_uri, '/');
+
         foreach ($excluded_paths as $path) {
-            $path = trim((string) $path);
+            $path = MDF_DB::sanitize_excluded_path($path);
             if ($path === '') {
                 continue;
             }
 
-            if (stripos($current_uri, $path) !== false) {
+            if (self::path_matches_exclusion($current_uri, $path)) {
                 return true;
             }
         }
@@ -89,7 +92,7 @@ class MDF_Redirector
 
     private static function safe_redirect($destination)
     {
-        $destination = esc_url_raw($destination);
+        $destination = MDF_DB::sanitize_destination($destination);
         if ($destination === '') {
             return;
         }
@@ -100,7 +103,7 @@ class MDF_Redirector
 
         // Evita que navegadores almacenen permanentemente redirecciones durante pruebas.
         nocache_headers();
-        wp_redirect($destination, 301);
+        wp_safe_redirect($destination, 301);
         exit;
     }
 
@@ -112,5 +115,21 @@ class MDF_Redirector
         $current_url = trailingslashit($current_scheme . $host) . ltrim($uri, '/');
 
         return untrailingslashit($current_url) === untrailingslashit($destination);
+    }
+
+    private static function path_matches_exclusion($current_path, $excluded_path)
+    {
+        $current_path = strtolower(trim((string) $current_path, '/'));
+        $excluded_path = strtolower(trim((string) $excluded_path, '/'));
+
+        if ($current_path === '' || $excluded_path === '') {
+            return false;
+        }
+
+        if ($current_path === $excluded_path) {
+            return true;
+        }
+
+        return strpos($current_path, $excluded_path . '/') === 0;
     }
 }

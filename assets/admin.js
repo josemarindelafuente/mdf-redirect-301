@@ -11,8 +11,8 @@
     function createRow(index) {
         var tr = document.createElement('tr');
         tr.innerHTML =
-            '<td><input type="text" name="mdf_rules[' + index + '][source]" class="regular-text" placeholder="* o ruta/origen"></td>' +
-            '<td><input type="url" name="mdf_rules[' + index + '][destination]" class="large-text" placeholder="https://destino.com"></td>' +
+            '<td><input type="hidden" name="mdf_rules[' + index + '][id]" value="" /><input type="text" name="mdf_rules[' + index + '][source]" class="regular-text" placeholder="* o ruta/origen"></td>' +
+            '<td><input type="text" name="mdf_rules[' + index + '][destination]" class="large-text mdf-rule-destination" placeholder="/pagina o https://tu-sitio.com/ruta" autocomplete="off" spellcheck="false"></td>' +
             '<td class="mdf-checkbox-cell"><input type="checkbox" name="mdf_rules[' + index + '][is_active]" value="1" checked></td>' +
             '<td class="mdf-remove-cell"><button type="button" class="button mdf-remove-rule">Quitar</button></td>';
         return tr;

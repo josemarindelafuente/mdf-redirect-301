@@ -26,11 +26,17 @@ function mdf_redirect_301_activate()
     MDF_DB::create_table();
 
     if (get_option('mdf_redirects_enabled', null) === null) {
-        add_option('mdf_redirects_enabled', 1);
+        add_option('mdf_redirects_enabled', 1, '', false);
     }
 
     if (get_option('mdf_excluded_paths', null) === null) {
-        add_option('mdf_excluded_paths', array('wp-admin', 'wp-login.php'));
+        add_option('mdf_excluded_paths', array('wp-admin', 'wp-login.php'), '', false);
+    }
+
+    if (get_option('mdf_allowed_destination_hosts', null) === null) {
+        $site_host = wp_parse_url(home_url(), PHP_URL_HOST);
+        $site_host = is_string($site_host) ? strtolower($site_host) : '';
+        add_option('mdf_allowed_destination_hosts', $site_host, '', false);
     }
 }
 
@@ -52,3 +58,17 @@ function mdf_redirect_301_bootstrap()
 }
 
 add_action('plugins_loaded', 'mdf_redirect_301_bootstrap');
+
+function mdf_redirect_301_plugin_row_meta($links, $file)
+{
+    if ($file !== plugin_basename(MDF_REDIRECT_301_FILE)) {
+        return $links;
+    }
+
+    $links[] = '<a href="https://www.marindelafuente.com.ar" target="_blank" rel="noopener noreferrer">' . esc_html__('Visita la web del autor', 'mdf-redirect-301') . '</a>';
+    $links[] = '<a href="https://github.com/josemarindelafuente/mdf-redirect-301" target="_blank" rel="noopener noreferrer">' . esc_html__('Ver detalles', 'mdf-redirect-301') . '</a>';
+
+    return $links;
+}
+
+add_filter('plugin_row_meta', 'mdf_redirect_301_plugin_row_meta', 10, 2);

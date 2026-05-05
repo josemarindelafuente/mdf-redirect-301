@@ -3,6 +3,64 @@
     border: 1px solid #ccd0d4;
     padding: 16px;
     margin: 16px 0;
+    border-radius: 6px;
+}
+
+.mdf-redirect-wrap .mdf-card h2 {
+    margin-top: 0;
+}
+
+.mdf-card-important {
+    border-left: 5px solid #2271b1;
+    background: #f6fbff;
+}
+
+.mdf-card-domains {
+    border-left-color: #b32d2e;
+    background: linear-gradient(180deg, #fff4f4 0%, #ffeaea 100%);
+    box-shadow: inset 0 0 0 1px #f3c8c8;
+}
+
+.mdf-card-domains h2 {
+    color: #8a2424;
+}
+
+.mdf-card-domains .mdf-card-kicker {
+    color: #8a2424;
+}
+
+.mdf-card-kicker {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #1d4f7a;
+}
+
+.mdf-status-line {
+    margin: 0 0 10px;
+}
+
+.mdf-status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.mdf-status-pill.is-active {
+    background: #e7f7ed;
+    color: #0f5132;
+}
+
+.mdf-status-pill.is-inactive {
+    background: #fbe9e9;
+    color: #842029;
+}
+
+.mdf-rules-card {
+    overflow-x: auto;
 }
 
 .mdf-rules-table th,
@@ -10,13 +68,29 @@
     vertical-align: middle;
 }
 
+.mdf-rules-table th {
+    font-weight: 600;
+    background: #f6f7f7;
+}
+
 .mdf-rules-table input[type="text"],
 .mdf-rules-table input[type="url"] {
     width: 100%;
+    min-height: 34px;
+}
+
+.mdf-rules-table input[type="text"]:focus,
+.mdf-rules-table input[type="url"]:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
 }
 
 .mdf-checkbox-cell,
 .mdf-remove-cell {
     text-align: center;
     width: 90px;
+}
+
+.mdf-rules-actions {
+    margin-top: 12px;
 }
