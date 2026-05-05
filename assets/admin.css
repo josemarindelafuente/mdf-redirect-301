@@ -1,0 +1,22 @@
+.mdf-redirect-wrap .mdf-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.mdf-rules-table th,
+.mdf-rules-table td {
+    vertical-align: middle;
+}
+
+.mdf-rules-table input[type="text"],
+.mdf-rules-table input[type="url"] {
+    width: 100%;
+}
+
+.mdf-checkbox-cell,
+.mdf-remove-cell {
+    text-align: center;
+    width: 90px;
+}
