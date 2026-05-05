@@ -1,28 +1,52 @@
 # MDF 301 Redirects
 
-Plugin de WordPress para gestionar redirecciones 301 de forma simple, con soporte de reglas por URL y wildcard `*`.
+![MDF 301 Redirects Banner](assets/images/banner.jpg)
+
+Plugin de WordPress para gestionar redirecciones 301 con una interfaz simple, soporte de wildcard `*`, controles de seguridad y configuración guiada por pestañas.
 
 ## Descripción
 
-**MDF 301 Redirects** permite crear redirecciones permanentes (HTTP 301) desde URLs antiguas hacia nuevas URLs, sin necesidad de editar archivos del servidor.
+**MDF 301 Redirects** permite crear redirecciones permanentes (HTTP 301) desde URLs antiguas hacia nuevas URLs sin editar `.htaccess` ni configuración del servidor.
 
-Está pensado para usuarios que necesitan una herramienta clara y rápida desde el panel de administración.
+Está diseñado para usuarios que buscan una herramienta fácil de usar, pero con validaciones de seguridad para evitar errores comunes y configuraciones peligrosas.
 
-## Funcionalidades
+## Funcionalidades principales
 
 - Activación/desactivación global del plugin.
-- Reglas de redirección por URL de origen y destino.
+- Reglas de redirección por origen y destino.
 - Soporte de wildcard `*` para redirigir todo el sitio.
-- Exclusión de rutas (por ejemplo `wp-admin`, `wp-login.php` y rutas personalizadas).
-- Interfaz en el administrador de WordPress con tabla editable.
-- Almacenamiento en tabla propia de base de datos.
+- Exclusión de rutas sensibles (`wp-admin`, `wp-login.php` y personalizadas).
+- Dominios externos permitidos (lista blanca) para redirecciones fuera del sitio.
+- Validación de reglas para evitar configuraciones inválidas.
+- Prevención de ciclos de redirección entre reglas.
+- Panel de administración organizado por pestañas.
+
+## Panel de administración (tabs)
+
+El panel de **MDF Redirects** está dividido en 4 pestañas:
+
+1. **Configuración**
+   - Estado global del plugin.
+   - Rutas excluidas.
+   - Dominios externos permitidos.
+
+2. **Reglas de redirección**
+   - Tabla editable de reglas.
+   - Activación/desactivación por regla.
+   - Agregar/eliminar filas dinámicamente.
+
+3. **Cómo funciona**
+   - Explicación breve de uso paso a paso.
+
+4. **Por qué usar 301**
+   - Motivos prácticos y casos reales de cuándo conviene usar redirecciones 301.
 
 ## Estructura del plugin
 
-- `mdf-redirect-301.php`: archivo principal, hooks y carga de clases.
-- `includes/class-mdf-db.php`: creación de tabla y operaciones de guardado/lectura.
-- `includes/class-mdf-redirector.php`: lógica de redirección 301 en frontend.
-- `includes/class-mdf-admin.php`: menú y panel de configuración.
+- `mdf-redirect-301.php`: archivo principal, hooks, carga de clases y defaults.
+- `includes/class-mdf-db.php`: creación de tabla, sanitización y persistencia.
+- `includes/class-mdf-redirector.php`: lógica de redirección en frontend.
+- `includes/class-mdf-admin.php`: menú, tabs, formularios y validaciones.
 - `assets/admin.css`: estilos del panel.
 - `assets/admin.js`: agregar/quitar reglas dinámicamente.
 - `uninstall.php`: limpieza al desinstalar.
@@ -30,89 +54,61 @@ Está pensado para usuarios que necesitan una herramienta clara y rápida desde 
 ## Instalación
 
 1. Copiar la carpeta `mdf-redirect-301` dentro de `wp-content/plugins/`.
-2. Ir al panel de WordPress > **Plugins**.
+2. Ir a **Plugins** en WordPress.
 3. Activar **MDF 301 Redirects**.
-4. Ir al menú lateral **MDF Redirects** para configurar reglas.
+4. Ir al menú lateral **MDF Redirects**.
 
-## Cómo usar
+## Uso rápido
 
-### 1) Estado global
+### 1) Configuración
 
-En la sección **Estado global** puedes habilitar o deshabilitar todas las redirecciones del plugin.
+- Activa el plugin en **Estado global**.
+- Define rutas excluidas (una por línea).
+- Si vas a redirigir a otro dominio, agrégalo en **Dominios externos permitidos**.
 
-### 2) Rutas excluidas
+### 2) Reglas
 
-En **Rutas excluidas**, agrega una ruta por línea para impedir redirecciones en esas URLs.
+En la pestaña **Reglas de redirección** crea tus reglas:
 
-Valores por defecto:
+- **Origen**: ruta de entrada o `*`.
+- **Destino**: URL completa o ruta interna.
+- **Activa**: habilita/deshabilita la regla sin borrarla.
 
-- `wp-admin`
-- `wp-login.php`
-
-También puedes agregar rutas personalizadas, por ejemplo:
-
-- `mi-admin-personalizado`
-- `acceso-interno`
-
-### 3) Reglas de redirección
-
-Cada regla tiene:
-
-- **Origen**: ruta o URL de origen.
-- **Destino**: URL final a la que se redirige.
-- **Activa**: permite activar/desactivar una regla individual.
-
-Después de editar, presiona **Guardar cambios**.
+Guarda con **Guardar reglas**.
 
 ## Wildcard `*`
 
 Si en **Origen** colocas `*`, esa regla redirige todas las URLs del sitio (excepto las rutas excluidas) al destino indicado.
 
-Este tipo de regla se evalúa primero.
-
 Ejemplo:
 
 - Origen: `*`
-- Destino: `https://example.com/nuevo-destino`
+- Destino: `https://www.marindelafuente.com.ar`
 
-Resultado: cualquier URL del sitio (salvo excluidas) se redirige 301 a ese destino.
+Nota: para destinos externos, ese dominio debe estar en **Dominios externos permitidos**.
 
-## Ejemplos de uso
+## Seguridad y validaciones implementadas
 
-### Cambio de URL de una página
-
-- Origen: `/servicios-viejo`
-- Destino: `https://tusitio.com/servicios`
-
-### Contenido eliminado con reemplazo
-
-- Origen: `/promo-2023`
-- Destino: `https://tusitio.com/promociones`
-
-### Migración de secciones completas
-
-Usar wildcard para enviar temporalmente todo el tráfico a una URL consolidada mientras se reorganiza el sitio.
-
-## Qué es una redirección 301
-
-Una redirección 301 indica que una URL se movió de forma permanente.
-
-Se usa habitualmente para:
-
-- mantener la experiencia de usuario al cambiar enlaces,
-- evitar errores 404,
-- consolidar URLs antiguas hacia nuevas rutas.
+- Verificación de nonce y capacidad (`manage_options`) al guardar.
+- Sanitización estricta de origen, destino y rutas excluidas.
+- Política de hosts permitidos para destinos externos (allowlist).
+- Soporte de URLs internas y normalización de formatos de destino.
+- Uso de `wp_safe_redirect` para redirecciones.
+- Detección de ciclos entre reglas activas.
+- Restricción de reglas wildcard activas simultáneas.
+- Límites de cantidad/tamaño de reglas para mayor robustez.
 
 ## Comportamiento técnico
 
-- El plugin usa el hook `template_redirect`.
-- Si el plugin está desactivado globalmente, no aplica redirecciones.
-- Se omiten rutas excluidas antes de evaluar reglas.
-- Si existe una regla wildcard activa, se aplica antes que las reglas específicas.
+- Hook principal: `template_redirect`.
+- Si el plugin está desactivado globalmente, no redirige.
+- Se excluyen rutas sensibles antes de evaluar reglas.
+- La regla wildcard se evalúa antes que reglas específicas.
+- No aplica redirección en contexto admin, AJAX o REST.
 
 ## Base de datos
 
-Tabla creada al activar el plugin:
+Tabla creada al activar:
 
 - `{prefix}mdf_redirects`
 
@@ -124,19 +120,26 @@ Columnas:
 - `is_active`
 - `created_at`
 
-Además se guardan opciones en `wp_options`:
+Opciones guardadas en `wp_options`:
 
 - `mdf_redirects_enabled`
 - `mdf_excluded_paths`
+- `mdf_allowed_destination_hosts`
 
 ## Desinstalación
 
-Al desinstalar el plugin se elimina:
+Al desinstalar se eliminan:
 
 - la tabla de reglas (`{prefix}mdf_redirects`),
-- las opciones `mdf_redirects_enabled` y `mdf_excluded_paths`.
+- `mdf_redirects_enabled`,
+- `mdf_excluded_paths`,
+- `mdf_allowed_destination_hosts`.
 
 ## Autor
 
 Plugin realizado por **José Marin de la Fuente**  
 Sitio web: [https://www.marindelafuente.com.ar](https://www.marindelafuente.com.ar)
+
+## Repositorio
+
+Detalles del proyecto: [https://github.com/josemarindelafuente/mdf-redirect-301](https://github.com/josemarindelafuente/mdf-redirect-301)

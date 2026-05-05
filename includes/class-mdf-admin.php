@@ -181,6 +181,9 @@ class MDF_Admin
                 </form>
             <?php elseif ($current_tab === 'ayuda') : ?>
                 <div class="mdf-card">
+                    <p>
+                        <img src="<?php echo esc_url(MDF_REDIRECT_301_URL . 'assets/images/logo-mdf-301-redirects.png'); ?>" alt="<?php echo esc_attr__('Logo MDF 301 Redirects', 'mdf-redirect-301'); ?>" style="max-width: 260px; height: auto;" />
+                    </p>
                     <h2><?php esc_html_e('¿Cómo funciona MDF 301 Redirects?', 'mdf-redirect-301'); ?></h2>
                     <p><?php esc_html_e('Este plugin te permite crear redirecciones 301 permanentes para enviar visitantes desde URLs antiguas a nuevas ubicaciones.', 'mdf-redirect-301'); ?></p>
                     <p><strong><?php esc_html_e('Pasos rápidos:', 'mdf-redirect-301'); ?></strong></p>
