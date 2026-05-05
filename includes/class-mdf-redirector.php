@@ -9,6 +9,7 @@ class MDF_Redirector
     public static function init()
     {
         add_action('template_redirect', array(__CLASS__, 'maybe_redirect'), 1);
+        add_filter('allowed_redirect_hosts', array(__CLASS__, 'allow_configured_redirect_hosts'));
     }
 
     public static function maybe_redirect()
@@ -105,6 +106,23 @@ class MDF_Redirector
         nocache_headers();
         wp_safe_redirect($destination, 301);
         exit;
+    }
+
+    public static function allow_configured_redirect_hosts($hosts)
+    {
+        if (!is_array($hosts)) {
+            $hosts = array();
+        }
+
+        $configured_hosts = MDF_DB::get_allowed_destination_hosts();
+        foreach ($configured_hosts as $host) {
+            $host = strtolower(trim((string) $host, '[]'));
+            if ($host !== '') {
+                $hosts[] = $host;
+            }
+        }
+
+        return array_values(array_unique($hosts));
     }
 
     private static function is_same_url($destination)
